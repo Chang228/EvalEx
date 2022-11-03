@@ -28,6 +28,15 @@ class ExpressionEvaluatorStringTest extends BaseExpressionEvaluatorTest {
   }
 
   @Test
+  void testStringConcat() throws ParseException, EvaluationException {
+    assertThat(evaluate("STR_CONCAT(\"Hello\",\" world\")")).isEqualTo("Hello world");
+  }
+
+  @Test
+  void testJoinConcat() throws ParseException, EvaluationException {
+    assertThat(evaluate("STR_JOIN(\",\",\"Hello\",\" world\")")).isEqualTo("Hello, world");
+  }
+  @Test
   void testStringAndNumberConcatenation() throws ParseException, EvaluationException {
     assertThat(evaluate("\"Test\"+1")).isEqualTo("Test1");
   }

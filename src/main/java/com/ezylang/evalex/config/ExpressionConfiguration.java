@@ -20,9 +20,7 @@ import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.data.MapBasedDataAccessor;
 import com.ezylang.evalex.functions.FunctionIfc;
 import com.ezylang.evalex.functions.basic.*;
-import com.ezylang.evalex.functions.string.StringContains;
-import com.ezylang.evalex.functions.string.StringLowerFunction;
-import com.ezylang.evalex.functions.string.StringUpperFunction;
+import com.ezylang.evalex.functions.string.*;
 import com.ezylang.evalex.functions.trigonometric.AcosFunction;
 import com.ezylang.evalex.functions.trigonometric.AcosHFunction;
 import com.ezylang.evalex.functions.trigonometric.AcosRFunction;
@@ -157,7 +155,6 @@ public class ExpressionConfiguration {
       MapBasedFunctionDictionary.ofFunctions(
           // basic functions
           Map.entry("ABS", new AbsFunction()),
-          Map.entry("ARRAY", new ArrayFunction()),
           Map.entry("CEILING", new CeilingFunction()),
           Map.entry("FACT", new FactFunction()),
           Map.entry("FLOOR", new FloorFunction()),
@@ -170,6 +167,7 @@ public class ExpressionConfiguration {
           Map.entry("RANDOM", new RandomFunction()),
           Map.entry("ROUND", new RoundFunction()),
           Map.entry("SUM", new SumFunction()),
+          Map.entry("SEQ", new SeqFunction()),
           Map.entry("SQRT", new SqrtFunction()),
           // trigonometric
           Map.entry("ACOS", new AcosFunction()),
@@ -208,6 +206,9 @@ public class ExpressionConfiguration {
           Map.entry("TANR", new TanRFunction()),
           // string functions
           Map.entry("STR_CONTAINS", new StringContains()),
+          Map.entry("STR_CONCAT", new StringConcatFunction()),
+          Map.entry("STR_SPLIT", new StringSplitFunction()),
+          Map.entry("STR_JOIN", new StringJoinFunction()),
           Map.entry("STR_LOWER", new StringLowerFunction()),
           Map.entry("STR_UPPER", new StringUpperFunction()));
 

@@ -30,7 +30,7 @@ import java.util.List;
 @FunctionParameter(name = "start")
 @FunctionParameter(name = "length", nonZero = true, nonNegative = true)
 @FunctionParameter(name = "step", isOptional = true)
-public class ArrayFunction extends AbstractFunction {
+public class SeqFunction extends AbstractFunction {
 
   @Override
   public EvaluationValue evaluate(
