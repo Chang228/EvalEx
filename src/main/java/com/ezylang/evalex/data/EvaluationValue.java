@@ -33,7 +33,42 @@ import lombok.Value;
  * corresponding object type.
  */
 @Value
-public class EvaluationValue implements Comparable<EvaluationValue> {
+public final class EvaluationValue implements Comparable<EvaluationValue> {
+
+  public Object getValue() {
+    return this.value;
+  }
+
+  public DataType getDataType() {
+    return this.dataType;
+  }
+
+  public boolean equals(final Object o) {
+    if (o == this) return true;
+    if (!(o instanceof EvaluationValue)) return false;
+    final EvaluationValue other = (EvaluationValue) o;
+    final Object this$value = this.getValue();
+    final Object other$value = other.getValue();
+    if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
+    final Object this$dataType = this.getDataType();
+    final Object other$dataType = other.getDataType();
+    if (this$dataType == null ? other$dataType != null : !this$dataType.equals(other$dataType)) return false;
+    return true;
+  }
+
+  public int hashCode() {
+    final int PRIME = 59;
+    int result = 1;
+    final Object $value = this.getValue();
+    result = result * PRIME + ($value == null ? 43 : $value.hashCode());
+    final Object $dataType = this.getDataType();
+    result = result * PRIME + ($dataType == null ? 43 : $dataType.hashCode());
+    return result;
+  }
+
+  public String toString() {
+    return "EvaluationValue(value=" + this.getValue() + ", dataType=" + this.getDataType() + ")";
+  }
 
   /** The supported data types. */
   public enum DataType {
@@ -57,9 +92,9 @@ public class EvaluationValue implements Comparable<EvaluationValue> {
     EXPRESSION_NODE
   }
 
-  Object value;
+  private final Object value;
 
-  DataType dataType;
+  private final DataType dataType;
 
   /**
    * Creates a new evaluation value by taking a good guess on the provided Java class and converting
