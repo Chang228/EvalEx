@@ -19,20 +19,7 @@ import com.ezylang.evalex.data.DataAccessorIfc;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.data.MapBasedDataAccessor;
 import com.ezylang.evalex.functions.FunctionIfc;
-import com.ezylang.evalex.functions.basic.AbsFunction;
-import com.ezylang.evalex.functions.basic.CeilingFunction;
-import com.ezylang.evalex.functions.basic.FactFunction;
-import com.ezylang.evalex.functions.basic.FloorFunction;
-import com.ezylang.evalex.functions.basic.IfFunction;
-import com.ezylang.evalex.functions.basic.Log10Function;
-import com.ezylang.evalex.functions.basic.LogFunction;
-import com.ezylang.evalex.functions.basic.MaxFunction;
-import com.ezylang.evalex.functions.basic.MinFunction;
-import com.ezylang.evalex.functions.basic.NotFunction;
-import com.ezylang.evalex.functions.basic.RandomFunction;
-import com.ezylang.evalex.functions.basic.RoundFunction;
-import com.ezylang.evalex.functions.basic.SqrtFunction;
-import com.ezylang.evalex.functions.basic.SumFunction;
+import com.ezylang.evalex.functions.basic.*;
 import com.ezylang.evalex.functions.string.StringContains;
 import com.ezylang.evalex.functions.string.StringLowerFunction;
 import com.ezylang.evalex.functions.string.StringUpperFunction;
@@ -170,6 +157,7 @@ public class ExpressionConfiguration {
       MapBasedFunctionDictionary.ofFunctions(
           // basic functions
           Map.entry("ABS", new AbsFunction()),
+          Map.entry("ARRAY", new ArrayFunction()),
           Map.entry("CEILING", new CeilingFunction()),
           Map.entry("FACT", new FactFunction()),
           Map.entry("FLOOR", new FloorFunction()),

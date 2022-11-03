@@ -24,6 +24,10 @@ import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.InfixOperator;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /** Subtraction of two numbers. */
 @InfixOperator(precedence = OPERATOR_PRECEDENCE_ADDITIVE)
 public class InfixMinusOperator extends AbstractOperator {
@@ -34,14 +38,29 @@ public class InfixMinusOperator extends AbstractOperator {
       throws EvaluationException {
     EvaluationValue leftOperand = operands[0];
     EvaluationValue rightOperand = operands[1];
-
     if (leftOperand.isNumberValue() && rightOperand.isNumberValue()) {
       return new EvaluationValue(
           leftOperand
               .getNumberValue()
               .subtract(
                   rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
-    } else {
+    } if (leftOperand.isArrayValue() && rightOperand.isArrayValue()) {
+      var left = leftOperand.getArrayValue();
+      var right = rightOperand.getArrayValue();
+      if(left.size()!=right.size()){
+        throw new EvaluationException(operatorToken, "Array count should be equal");
+      }
+      List<BigDecimal> list = new ArrayList<>();
+      for (int i = 0;i<left.size();i++){
+        list.add((
+                left.get(i)
+                        .getNumberValue()
+                        .subtract(
+                                right.get(i).getNumberValue(), expression.getConfiguration().getMathContext())));
+      }
+      return new EvaluationValue(list);
+    }
+    else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
     }
   }

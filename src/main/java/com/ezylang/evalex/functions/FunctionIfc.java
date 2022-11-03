@@ -27,6 +27,7 @@ import java.util.List;
  */
 public interface FunctionIfc {
 
+  int getRequiredParameterCount();
   /**
    * Returns the list of parameter definitions. Is never empty or <code>null</code>.
    *

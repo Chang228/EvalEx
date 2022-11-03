@@ -21,6 +21,10 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /** Boolean negation function. */
 @FunctionParameter(name = "value")
 public class NotFunction extends AbstractFunction {
@@ -29,8 +33,18 @@ public class NotFunction extends AbstractFunction {
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
 
-    boolean result = parameterValues[0].getBooleanValue();
 
-    return new EvaluationValue(!result);
+
+    EvaluationValue value = parameterValues[0];
+    if(value.isArrayValue()){
+      List<Boolean> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:value.getArrayValue() ) {
+        list.add((!evaluationValue.getBooleanValue()));
+      }
+      return new EvaluationValue(list);
+    }
+
+
+    return new EvaluationValue(!value.getBooleanValue());
   }
 }

@@ -24,6 +24,8 @@ import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.InfixOperator;
 import com.ezylang.evalex.parser.Token;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Remainder (modulo) of two numbers. */
 @InfixOperator(precedence = OPERATOR_PRECEDENCE_MULTIPLICATIVE)
@@ -36,17 +38,33 @@ public class InfixModuloOperator extends AbstractOperator {
     EvaluationValue leftOperand = operands[0];
     EvaluationValue rightOperand = operands[1];
 
-    if (leftOperand.isNumberValue() && rightOperand.isNumberValue()) {
+    if ( rightOperand.isNumberValue()) {
 
       if (rightOperand.getNumberValue().equals(BigDecimal.ZERO)) {
         throw new EvaluationException(operatorToken, "Division by zero");
       }
 
-      return new EvaluationValue(
-          leftOperand
-              .getNumberValue()
-              .remainder(
-                  rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
+      if(leftOperand.isNumberValue()) {
+        return new EvaluationValue(
+                leftOperand
+                        .getNumberValue()
+                        .remainder(
+                                rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
+      }
+      else if(leftOperand.isArrayValue()) {
+        List<BigDecimal> list = new ArrayList<>();
+        for (EvaluationValue evaluationValue:leftOperand.getArrayValue() ) {
+          list.add((
+                  evaluationValue
+                          .getNumberValue()
+                          .remainder(
+                                  rightOperand.getNumberValue(), expression.getConfiguration().getMathContext())));
+        }
+        return new EvaluationValue(list);
+      } else {
+        throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
+      }
+
     } else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
     }

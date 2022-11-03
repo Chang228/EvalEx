@@ -17,11 +17,16 @@ package com.ezylang.evalex.operators.arithmetic;
 
 import static com.ezylang.evalex.operators.OperatorIfc.OPERATOR_PRECEDENCE_ADDITIVE;
 
+import com.ezylang.evalex.EvaluationException;
 import com.ezylang.evalex.Expression;
 import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.InfixOperator;
 import com.ezylang.evalex.parser.Token;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Addition of numbers and strings. If one operand is a string, a string concatenation is performed.
@@ -31,7 +36,7 @@ public class InfixPlusOperator extends AbstractOperator {
 
   @Override
   public EvaluationValue evaluate(
-      Expression expression, Token operatorToken, EvaluationValue... operands) {
+      Expression expression, Token operatorToken, EvaluationValue... operands) throws EvaluationException {
     EvaluationValue leftOperand = operands[0];
     EvaluationValue rightOperand = operands[1];
 
@@ -40,6 +45,20 @@ public class InfixPlusOperator extends AbstractOperator {
           leftOperand
               .getNumberValue()
               .add(rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
+    } if (leftOperand.isArrayValue() && rightOperand.isArrayValue()) {
+      var left = leftOperand.getArrayValue();
+      var right = rightOperand.getArrayValue();
+      if(left.size()!=right.size()){
+        throw new EvaluationException(operatorToken, "Array count should be equal");
+      }
+      List<BigDecimal> list = new ArrayList<>();
+      for (int i = 0;i<left.size();i++){
+        list.add((
+                left.get(i)
+                        .getNumberValue()
+                        .add(right.get(i).getNumberValue(), expression.getConfiguration().getMathContext())));
+      }
+      return new EvaluationValue(list);
     } else {
       return new EvaluationValue(leftOperand.getStringValue() + rightOperand.getStringValue());
     }

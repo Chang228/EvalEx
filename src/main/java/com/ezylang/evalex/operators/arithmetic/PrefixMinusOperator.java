@@ -22,6 +22,10 @@ import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.PrefixOperator;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
 /** Unary prefix minus. */
 @PrefixOperator(leftAssociative = false)
 public class PrefixMinusOperator extends AbstractOperator {
@@ -30,12 +34,20 @@ public class PrefixMinusOperator extends AbstractOperator {
   public EvaluationValue evaluate(
       Expression expression, Token operatorToken, EvaluationValue... operands)
       throws EvaluationException {
-    EvaluationValue operand = operands[0];
 
+    EvaluationValue operand = operands[0];
     if (operand.isNumberValue()) {
       return new EvaluationValue(
-          operand.getNumberValue().negate(expression.getConfiguration().getMathContext()));
-    } else {
+              operand.getNumberValue().negate(expression.getConfiguration().getMathContext()));
+    } else if(operand.isArrayValue()){
+      List<EvaluationValue> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:operand.getArrayValue() ) {
+        list.add( new EvaluationValue(
+                evaluationValue.getNumberValue().negate(expression.getConfiguration().getMathContext())));
+      }
+      return new EvaluationValue(list);
+    }
+    else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
     }
   }

@@ -21,6 +21,7 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /** Returns the maximum value of all parameters. */
 @FunctionParameter(name = "value", isVarArg = true)
@@ -30,7 +31,14 @@ public class MaxFunction extends AbstractFunction {
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
     BigDecimal max = null;
     for (EvaluationValue parameter : parameterValues) {
-      if (max == null || parameter.getNumberValue().compareTo(max) > 0) {
+      if(parameter.isArrayValue()){
+        for (EvaluationValue evaluationValue:parameter.getArrayValue() ) {
+          if (max == null ||  evaluationValue.getNumberValue().compareTo(max) > 0) {
+            max = evaluationValue.getNumberValue();
+          }
+        }
+      }
+      else  if (max == null || parameter.getNumberValue().compareTo(max) > 0) {
         max = parameter.getNumberValue();
       }
     }

@@ -31,7 +31,11 @@ public abstract class AbstractFunction implements FunctionIfc {
   private final List<FunctionParameterDefinition> functionParameterDefinitions = new ArrayList<>();
 
   private final boolean hasVarArgs;
+  private int requiredParameterCount = 0;
 
+  public int getRequiredParameterCount(){
+    return requiredParameterCount;
+  }
   /**
    * Creates a new function and uses the {@link FunctionParameter} annotations to create the
    * parameter definitions.
@@ -42,6 +46,7 @@ public abstract class AbstractFunction implements FunctionIfc {
 
     boolean varArgParameterFound = false;
 
+    boolean hasOptional = false;
     for (FunctionParameter parameter : parameterAnnotations) {
       if (varArgParameterFound) {
         throw new IllegalArgumentException(
@@ -49,6 +54,15 @@ public abstract class AbstractFunction implements FunctionIfc {
       }
       if (parameter.isVarArg()) {
         varArgParameterFound = true;
+      }
+      if(parameter.isOptional()){
+        hasOptional = true;
+      }
+      if(!parameter.isOptional()  ){
+        if(hasOptional)
+          throw new IllegalArgumentException(
+                "Optional parameters cannot place before required parameters");
+        requiredParameterCount ++;
       }
       functionParameterDefinitions.add(
           FunctionParameterDefinition.builder()

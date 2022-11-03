@@ -21,6 +21,10 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /** Absolute (non-negative) value. */
 @FunctionParameter(name = "value")
 public class AbsFunction extends AbstractFunction {
@@ -29,7 +33,15 @@ public class AbsFunction extends AbstractFunction {
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
 
-    return new EvaluationValue(
-        parameterValues[0].getNumberValue().abs(expression.getConfiguration().getMathContext()));
+
+    EvaluationValue value = parameterValues[0];
+    if(value.isArrayValue()){
+      List<BigDecimal> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:value.getArrayValue() ) {
+        list.add((evaluationValue.getNumberValue().abs(expression.getConfiguration().getMathContext())));
+      }
+      return new EvaluationValue(list);
+    }
+    return new EvaluationValue(value.getNumberValue().abs(expression.getConfiguration().getMathContext()));
   }
 }

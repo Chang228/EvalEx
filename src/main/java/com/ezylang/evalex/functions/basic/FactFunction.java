@@ -21,6 +21,9 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Factorial function, calculates the factorial of a base value. */
 @FunctionParameter(name = "base")
@@ -29,7 +32,27 @@ public class FactFunction extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
-    int number = parameterValues[0].getNumberValue().intValue();
+    EvaluationValue value = parameterValues[0];
+
+    if(value.isArrayValue()){
+      List<BigDecimal> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:value.getArrayValue() ) {
+
+        int number =  evaluationValue.getNumberValue().intValue();
+        BigDecimal factorial = BigDecimal.ONE;
+        for (int i = 1; i <= number; i++) {
+          factorial =
+                  factorial.multiply(
+                          new BigDecimal(i, expression.getConfiguration().getMathContext()),
+                          expression.getConfiguration().getMathContext());
+        }
+        list.add((factorial));
+
+      }
+      return new EvaluationValue(list);
+    }
+
+    int number = value.getNumberValue().intValue();
     BigDecimal factorial = BigDecimal.ONE;
     for (int i = 1; i <= number; i++) {
       factorial =

@@ -21,6 +21,11 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Rounds the given value to the specified scale, using the {@link java.math.MathContext} of the
  * expression configuration.
@@ -34,6 +39,19 @@ public class RoundFunction extends AbstractFunction {
 
     EvaluationValue value = parameterValues[0];
     EvaluationValue precision = parameterValues[1];
+
+    if(value.isArrayValue()){
+      List<BigDecimal> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:value.getArrayValue() ) {
+        list.add((
+                evaluationValue
+                        .getNumberValue()
+                        .setScale(
+                                precision.getNumberValue().intValue(),
+                                expression.getConfiguration().getMathContext().getRoundingMode())));
+      }
+      return new EvaluationValue(list);
+    }
 
     return new EvaluationValue(
         value

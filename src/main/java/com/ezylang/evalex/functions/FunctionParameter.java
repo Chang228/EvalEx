@@ -43,4 +43,7 @@ public @interface FunctionParameter {
 
   /** If the parameter does not allow negative values. */
   boolean nonNegative() default false;
+
+  boolean isOptional() default false;
+
 }

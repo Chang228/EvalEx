@@ -20,7 +20,11 @@ import com.ezylang.evalex.data.EvaluationValue;
 import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
+
+import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Rounds the given value an integer using the rounding mode {@link RoundingMode#CEILING} */
 @FunctionParameter(name = "value")
@@ -28,8 +32,15 @@ public class CeilingFunction extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
-
     EvaluationValue value = parameterValues[0];
+
+    if(value.isArrayValue()){
+      List<BigDecimal> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:value.getArrayValue() ) {
+        list.add((value.getNumberValue().setScale(0, RoundingMode.CEILING)));
+      }
+      return new EvaluationValue(list);
+    }
 
     return new EvaluationValue(value.getNumberValue().setScale(0, RoundingMode.CEILING));
   }

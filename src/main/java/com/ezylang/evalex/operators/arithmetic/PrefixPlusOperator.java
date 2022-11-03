@@ -22,6 +22,9 @@ import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.PrefixOperator;
 import com.ezylang.evalex.parser.Token;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /** Unary prefix plus. */
 @PrefixOperator(leftAssociative = false)
 public class PrefixPlusOperator extends AbstractOperator {
@@ -31,12 +34,20 @@ public class PrefixPlusOperator extends AbstractOperator {
       Expression expression, Token operatorToken, EvaluationValue... operands)
       throws EvaluationException {
     EvaluationValue operator = operands[0];
-
     if (operator.isNumberValue()) {
       return new EvaluationValue(
-          operator.getNumberValue().plus(expression.getConfiguration().getMathContext()));
-    } else {
+              operator.getNumberValue().plus(expression.getConfiguration().getMathContext()));
+    } else if(operator.isArrayValue()){
+      List<EvaluationValue> list = new ArrayList<>();
+      for (EvaluationValue evaluationValue:operator.getArrayValue() ) {
+        list.add( new EvaluationValue(
+                evaluationValue.getNumberValue().plus(expression.getConfiguration().getMathContext())));
+      }
+      return new EvaluationValue(list);
+    }
+    else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
     }
+
   }
 }

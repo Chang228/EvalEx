@@ -27,6 +27,25 @@ import org.junit.jupiter.api.Test;
 class ExpressionEvaluatorArrayTest extends BaseExpressionEvaluatorTest {
 
   @Test
+  void testCreateArray() throws ParseException, EvaluationException {
+    Expression expression = createExpression("SUM(ARRAY(1,10))");
+
+    assertThat(expression.evaluate().getStringValue()).isEqualTo("55");
+  }
+  @Test
+  void testArraySum() throws ParseException, EvaluationException {
+    List<BigDecimal> array = Arrays.asList(new BigDecimal(2), new BigDecimal(4), new BigDecimal(6));
+    Expression expression = createExpression("SUM(a)").with("a", array);
+    assertThat(expression.evaluate().getStringValue()).isEqualTo("12");
+  }
+  @Test
+  void testArrayMinusSum() throws ParseException, EvaluationException {
+    List<BigDecimal> array = Arrays.asList(new BigDecimal(2), new BigDecimal(4), new BigDecimal(6));
+    List<BigDecimal> array2 = Arrays.asList(new BigDecimal(2), new BigDecimal(4), new BigDecimal(6));
+    Expression expression = createExpression("SUM(a-b)").with("a", array).with("b", array2);
+    assertThat(expression.evaluate().getStringValue()).isEqualTo("0");
+  }
+  @Test
   void testSimpleArray() throws ParseException, EvaluationException {
     List<BigDecimal> array = List.of(new BigDecimal(99));
     Expression expression = createExpression("a[0]").with("a", array);

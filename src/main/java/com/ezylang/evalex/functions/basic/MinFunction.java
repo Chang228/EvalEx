@@ -21,6 +21,7 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 /** Returns the minimum value of all parameters. */
 @FunctionParameter(name = "value", isVarArg = true)
@@ -30,7 +31,14 @@ public class MinFunction extends AbstractFunction {
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
     BigDecimal min = null;
     for (EvaluationValue parameter : parameterValues) {
-      if (min == null || parameter.getNumberValue().compareTo(min) < 0) {
+      if(parameter.isArrayValue()){
+        for (EvaluationValue evaluationValue:parameter.getArrayValue() ) {
+          if (min == null ||  evaluationValue.getNumberValue().compareTo(min) < 0) {
+            min = evaluationValue.getNumberValue();
+          }
+        }
+      }
+      else if (min == null || parameter.getNumberValue().compareTo(min) < 0) {
         min = parameter.getNumberValue();
       }
     }
