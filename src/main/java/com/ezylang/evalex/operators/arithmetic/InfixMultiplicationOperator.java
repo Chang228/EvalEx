@@ -24,6 +24,10 @@ import com.ezylang.evalex.operators.AbstractOperator;
 import com.ezylang.evalex.operators.InfixOperator;
 import com.ezylang.evalex.parser.Token;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
 /** Multiplication of two numbers. */
 @InfixOperator(precedence = OPERATOR_PRECEDENCE_MULTIPLICATIVE)
 public class InfixMultiplicationOperator extends AbstractOperator {
@@ -41,6 +45,28 @@ public class InfixMultiplicationOperator extends AbstractOperator {
               .getNumberValue()
               .multiply(
                   rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
+    } if (leftOperand.isArrayValue() && rightOperand.isNumberValue()) {
+
+      var left = leftOperand.getArrayValue();
+      BigDecimal rightVal = rightOperand.getNumberValue();
+      List<BigDecimal> list = new ArrayList<>();
+      for (int i = 0;i<left.size();i++){
+        list.add(
+                left.get(i)
+                        .getNumberValue()
+                        .multiply(rightVal, expression.getConfiguration().getMathContext()));
+      }
+      return new EvaluationValue(list);
+    } if (leftOperand.isNumberValue() && rightOperand.isArrayValue()) {
+
+      var right = rightOperand.getArrayValue();
+      List<BigDecimal> list = new ArrayList<>();
+      BigDecimal leftVal = leftOperand.getNumberValue();
+      for (int i = 0;i<right.size();i++){
+        list.add(leftVal.multiply(
+                                right.get(i).getNumberValue(), expression.getConfiguration().getMathContext()));
+      }
+      return new EvaluationValue(list);
     } else {
       throw EvaluationException.ofUnsupportedDataTypeInOperation(operatorToken);
     }

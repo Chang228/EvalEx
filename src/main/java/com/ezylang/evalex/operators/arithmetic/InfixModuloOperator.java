@@ -40,6 +40,7 @@ public class InfixModuloOperator extends AbstractOperator {
 
     if ( rightOperand.isNumberValue()) {
 
+      var rightVal = rightOperand.getNumberValue();
       if (rightOperand.getNumberValue().equals(BigDecimal.ZERO)) {
         throw new EvaluationException(operatorToken, "Division by zero");
       }
@@ -48,8 +49,7 @@ public class InfixModuloOperator extends AbstractOperator {
         return new EvaluationValue(
                 leftOperand
                         .getNumberValue()
-                        .remainder(
-                                rightOperand.getNumberValue(), expression.getConfiguration().getMathContext()));
+                        .remainder(rightVal, expression.getConfiguration().getMathContext()));
       }
       else if(leftOperand.isArrayValue()) {
         List<BigDecimal> list = new ArrayList<>();
@@ -57,8 +57,7 @@ public class InfixModuloOperator extends AbstractOperator {
           list.add((
                   evaluationValue
                           .getNumberValue()
-                          .remainder(
-                                  rightOperand.getNumberValue(), expression.getConfiguration().getMathContext())));
+                          .remainder(rightVal, expression.getConfiguration().getMathContext())));
         }
         return new EvaluationValue(list);
       } else {
