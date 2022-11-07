@@ -23,29 +23,55 @@ import com.ezylang.evalex.parser.Token;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.List;
 
 /** Returns the sum value of all parameters. */
 @FunctionParameter(name = "value", isVarArg = true)
-public class AveFunction extends AbstractFunction {
+public class StdFunction extends AbstractFunction {
   @Override
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
-    BigDecimal sum = BigDecimal.ZERO;
-    MathContext context = expression.getConfiguration().getMathContext();
-    int count = 0;
+    List<BigDecimal> numbers = new ArrayList<>();
     for (EvaluationValue parameter : parameterValues) {
       if(parameter.isArrayValue()){
         for (EvaluationValue evaluationValue:parameter.getArrayValue() ) {
-          sum = sum.add(evaluationValue.getNumberValue(), context);
-          count++;
+          numbers.add(evaluationValue.getNumberValue() );
         }
       }
       else{
-        sum = sum.add(parameter.getNumberValue(), context);
-        count++;
+        numbers.add(parameter.getNumberValue() );
       }
 
     }
-    return new EvaluationValue(sum.divide(new BigDecimal(count),context));
+    return new EvaluationValue(POP_STD_dev(numbers.toArray(new BigDecimal[0]), expression.getConfiguration().getMathContext()));
+  }
+
+
+  // population standard deviation 总体标准差
+  BigDecimal POP_STD_dev(BigDecimal[] data, MathContext context) {
+    return POP_Variance(data,context).sqrt(context);
+  }
+  // population variance 总体方差
+  BigDecimal POP_Variance(BigDecimal[] data, MathContext context) {
+    BigDecimal variance = BigDecimal.ZERO;
+    BigDecimal mean =  Mean(data,context);
+    for (int i = 0; i < data.length; i++) {
+      variance = variance.add ( (data[i].subtract(mean)).pow(2));
+    }
+    BigDecimal div = new BigDecimal( data.length - 1);
+    variance = variance.divide(div,context);
+    return variance;
+  }
+
+  BigDecimal Sum(BigDecimal[] data) {
+    BigDecimal sum = BigDecimal.ZERO;
+    for (int i = 0; i < data.length; i++)
+      sum = sum.add( data[i]);
+    return sum;
+  }
+
+  BigDecimal Mean(BigDecimal[] data, MathContext context) {
+    return Sum(data).divide(new BigDecimal(data.length),context);
   }
 }

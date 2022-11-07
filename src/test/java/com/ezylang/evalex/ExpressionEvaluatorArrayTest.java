@@ -28,9 +28,17 @@ class ExpressionEvaluatorArrayTest extends BaseExpressionEvaluatorTest {
 
   @Test
   void testCreateArray() throws ParseException, EvaluationException {
-    Expression expression = createExpression("SUM(ARRAY(1,10))");
+    Expression expression = createExpression("SUM(SEQ(1,10))");
 
     assertThat(expression.evaluate().getStringValue()).isEqualTo("55");
+  }
+
+
+  @Test
+  void testStdArray() throws ParseException, EvaluationException {
+    Expression expression = createExpression("STD(SEQ(1,10))");
+
+    assertThat(expression.evaluate().getStringValue()).isEqualTo("3.027650354097491665422532809718193699194735833476679498972216937106");
   }
   @Test
   void testArraySum() throws ParseException, EvaluationException {

@@ -21,6 +21,7 @@ import com.ezylang.evalex.functions.AbstractFunction;
 import com.ezylang.evalex.functions.FunctionParameter;
 import com.ezylang.evalex.parser.Token;
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 
 /** Returns the sum value of all parameters. */
@@ -30,14 +31,15 @@ public class SumFunction extends AbstractFunction {
   public EvaluationValue evaluate(
       Expression expression, Token functionToken, EvaluationValue... parameterValues) {
     BigDecimal sum = BigDecimal.ZERO;
+    MathContext context = expression.getConfiguration().getMathContext();
     for (EvaluationValue parameter : parameterValues) {
       if(parameter.isArrayValue()){
         for (EvaluationValue evaluationValue:parameter.getArrayValue() ) {
-          sum = sum.add(evaluationValue.getNumberValue(), expression.getConfiguration().getMathContext());
+          sum = sum.add(evaluationValue.getNumberValue(), context);
         }
       }
       else{
-        sum = sum.add(parameter.getNumberValue(), expression.getConfiguration().getMathContext());
+        sum = sum.add(parameter.getNumberValue(), context);
       }
 
     }
