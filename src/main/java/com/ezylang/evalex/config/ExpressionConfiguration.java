@@ -155,7 +155,8 @@ public class ExpressionConfiguration {
       MapBasedFunctionDictionary.ofFunctions(
           // basic functions
           Map.entry("ABS", new AbsFunction()),
-          Map.entry("CEILING", new CeilingFunction()),
+          Map.entry("AVE", new AveFunction()),
+              Map.entry("CEILING", new CeilingFunction()),
           Map.entry("FACT", new FactFunction()),
           Map.entry("FLOOR", new FloorFunction()),
           Map.entry("IF", new IfFunction()),
